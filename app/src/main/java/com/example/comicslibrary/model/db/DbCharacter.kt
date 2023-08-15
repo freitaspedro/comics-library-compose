@@ -29,4 +29,5 @@ data class DbCharacter(
     }
 }
 
+//TODO: move this to a separate class
 fun List<String>.comicsToString() = this.joinToString(separator = ", ")

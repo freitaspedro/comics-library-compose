@@ -1,29 +1,28 @@
 package com.example.comicslibrary
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.comicslibrary.ui.theme.ComicsLibraryTheme
-import com.example.comicslibrary.view.CharactersBottomNav
-import com.example.comicslibrary.view.CollectionScreen
-import com.example.comicslibrary.view.LibraryScreen
+import com.example.comicslibrary.view.*
 import com.example.comicslibrary.viewmodel.LibraryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 sealed class Destination(val route: String) {
     object Library: Destination("library")
     object Collection: Destination("collection")
-    object CharacterDetail: Destination("character/{characterId}") {
+    object CharacterDetails: Destination("character/{characterId}") {
         fun createRoute(characterId: Int?) = "character/$characterId"
     }
 }
@@ -56,16 +55,36 @@ fun CharactersScaffold(navController: NavHostController, viewModel: LibraryViewM
 
     Scaffold (
         scaffoldState = scaffoldState,
-        bottomBar = { CharactersBottomNav(navController = navController) }
+        bottomBar = { ComicsBottomNav(navController = navController) }
     ) {
         paddingValues ->
             NavHost(
                 navController = navController,
                 startDestination = Destination.Library.route
             ) {
-                composable(Destination.Library.route) { LibraryScreen(navController, viewModel, paddingValues) }
-                composable(Destination.Collection.route) { CollectionScreen() }
-                composable(Destination.CharacterDetail.route) { navBackStackEntry ->   }
+                composable(Destination.Library.route) {
+                    LibraryScreen(navController, viewModel, paddingValues)
+                }
+                composable(Destination.Collection.route) {
+                    CollectionScreen()
+                }
+                composable(Destination.CharacterDetails.route) { navBackStackEntry ->
+                    val id = navBackStackEntry.arguments?.getString("characterId")?.toIntOrNull()
+                    if (id == null) {
+                        Toast.makeText(
+                             LocalContext.current,
+                             "Character id is required",
+                             Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        viewModel.retrieveCharacter(id)
+                        CharacterDetailsScreen(
+                            navController = navController,
+                            viewModel = viewModel,
+                            paddingValues = paddingValues
+                        )
+                    }
+                }
             }
     }
 

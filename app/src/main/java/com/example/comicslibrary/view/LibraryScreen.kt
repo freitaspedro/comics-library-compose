@@ -43,7 +43,10 @@ fun LibraryScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = paddingValues.calculateBottomPadding()),
+            .padding(
+                top = 12.dp,
+                bottom = paddingValues.calculateBottomPadding()
+            ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -116,7 +119,7 @@ fun DisplayCharacters(
                         .wrapContentHeight()
                         .clickable {
                             if (character.id != null)
-                                navController.navigate(Destination.CharacterDetail.createRoute(id))
+                                navController.navigate(Destination.CharacterDetails.createRoute(id))
                             else
                                 Toast
                                     .makeText(context, "Character id is null", Toast.LENGTH_SHORT)
@@ -148,6 +151,7 @@ fun DisplayCharacters(
     }
 }
 
+//TODO: move this to a new file
 @Composable
 fun AttributionText(text: String) {
     Text(
@@ -157,6 +161,7 @@ fun AttributionText(text: String) {
     )
 }
 
+//TODO: move this to a new file
 @Composable
 fun CharacterImage(
     url: String?,
