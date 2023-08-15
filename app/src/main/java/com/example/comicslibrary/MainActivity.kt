@@ -56,7 +56,7 @@ fun CharactersScaffold(navController: NavHostController, viewModel: LibraryViewM
 
     Scaffold (
         scaffoldState = scaffoldState,
-        bottomBar = { CharactersBottomNav(navController = navController)}
+        bottomBar = { CharactersBottomNav(navController = navController) }
     ) {
         paddingValues ->
             NavHost(
