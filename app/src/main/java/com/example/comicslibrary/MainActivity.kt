@@ -52,6 +52,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CharactersScaffold(navController: NavHostController, viewModel: LibraryViewModel) {
     val scaffoldState = rememberScaffoldState()
+    val context = LocalContext.current
 
     Scaffold (
         scaffoldState = scaffoldState,
@@ -71,18 +72,12 @@ fun CharactersScaffold(navController: NavHostController, viewModel: LibraryViewM
                 composable(Destination.CharacterDetails.route) { navBackStackEntry ->
                     val id = navBackStackEntry.arguments?.getString("characterId")?.toIntOrNull()
                     if (id == null) {
-                        Toast.makeText(
-                             LocalContext.current,
-                             "Character id is required",
-                             Toast.LENGTH_SHORT
-                        ).show()
+                        Toast
+                            .makeText(context, "Character id is required", Toast.LENGTH_SHORT)
+                            .show()
                     } else {
                         viewModel.retrieveCharacter(id)
-                        CharacterDetailsScreen(
-                            navController = navController,
-                            viewModel = viewModel,
-                            paddingValues = paddingValues
-                        )
+                        CharacterDetailsScreen(navController, viewModel, paddingValues)
                     }
                 }
             }

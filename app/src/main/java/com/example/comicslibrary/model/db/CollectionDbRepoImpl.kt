@@ -2,7 +2,7 @@ package com.example.comicslibrary.model.db
 
 import kotlinx.coroutines.flow.Flow
 
-class CollectionsDbRepoImpl(private val characterDao: CharacterDao): CollectionsDbRepo {
+class CollectionDbRepoImpl(private val characterDao: CharacterDao): CollectionDbRepo {
 
     override suspend fun getCharacters(): Flow<List<DbCharacter>> =
         characterDao.getCharacters()

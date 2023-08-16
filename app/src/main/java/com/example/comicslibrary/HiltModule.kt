@@ -5,9 +5,9 @@ import androidx.room.Room
 import com.example.comicslibrary.model.api.ApiService
 import com.example.comicslibrary.model.api.MarvelApiRepo
 import com.example.comicslibrary.model.db.CharacterDao
-import com.example.comicslibrary.model.db.CollectionsDb
-import com.example.comicslibrary.model.db.CollectionsDbRepo
-import com.example.comicslibrary.model.db.CollectionsDbRepoImpl
+import com.example.comicslibrary.model.db.CollectionDb
+import com.example.comicslibrary.model.db.CollectionDbRepo
+import com.example.comicslibrary.model.db.CollectionDbRepoImpl
 import com.example.comicslibrary.model.db.Constants.DB
 import dagger.Module
 import dagger.Provides
@@ -22,14 +22,14 @@ class HiltModule {
     fun provideApiRepo() = MarvelApiRepo(ApiService.api)
 
     @Provides
-    fun provideCollectionsDb(@ApplicationContext context: Context) =
-        Room.databaseBuilder(context, CollectionsDb::class.java, DB).build()
+    fun provideCollectionDb(@ApplicationContext context: Context) =
+        Room.databaseBuilder(context, CollectionDb::class.java, DB).build()
 
     @Provides
-    fun provideCharacterDao(collectionsDb: CollectionsDb) = collectionsDb.characterDao()
+    fun provideCharacterDao(collectionDb: CollectionDb) = collectionDb.characterDao()
 
     @Provides
-    fun provideDbRepoImpl(characterDao: CharacterDao): CollectionsDbRepo =
-        CollectionsDbRepoImpl(characterDao)
+    fun provideDbRepoImpl(characterDao: CharacterDao): CollectionDbRepo =
+        CollectionDbRepoImpl(characterDao)
 
 }

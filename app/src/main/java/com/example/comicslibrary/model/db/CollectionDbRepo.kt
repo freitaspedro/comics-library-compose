@@ -2,7 +2,7 @@ package com.example.comicslibrary.model.db
 
 import kotlinx.coroutines.flow.Flow
 
-interface CollectionsDbRepo {
+interface CollectionDbRepo {
 
     suspend fun getCharacters(): Flow<List<DbCharacter>>
 
