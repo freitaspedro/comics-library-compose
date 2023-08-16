@@ -37,8 +37,9 @@ fun LibraryScreen(
     viewModel: LibraryViewModel,
     paddingValues: PaddingValues
 ) {
+
     val result by viewModel.result.collectAsState()
-    val text = viewModel.queryText.collectAsState()
+    val searchText = viewModel.queryText.collectAsState()
 
     Column(
         modifier = Modifier
@@ -52,7 +53,7 @@ fun LibraryScreen(
 
         OutlinedTextField(
             modifier = Modifier.padding(8.dp),
-            value = text.value,
+            value = searchText.value,
             onValueChange = viewModel::onQueryUpdate,
             label = { Text(text = "Character search") },
             placeholder = { Text(text = "Character") },
@@ -139,7 +140,11 @@ fun DisplayCharacters(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 20.sp
                             )
-                            Text(text = description ?: "", maxLines = 4, fontSize = 14.sp)
+                            Text(
+                                text = description ?: "",
+                                maxLines = 4,
+                                fontSize = 14.sp
+                            )
                         }
                     }
 

@@ -53,7 +53,6 @@ fun CharacterDetailsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp)
             .padding(
                 start = 4.dp,
                 top = 12.dp,

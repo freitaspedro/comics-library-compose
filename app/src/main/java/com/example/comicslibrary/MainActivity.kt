@@ -77,7 +77,7 @@ fun CharactersScaffold(
                     LibraryScreen(navController, libraryViewModel, paddingValues)
                 }
                 composable(Destination.Collection.route) {
-                    CollectionScreen()
+                    CollectionScreen(navController, collectionViewModel, paddingValues)
                 }
                 composable(Destination.CharacterDetails.route) { navBackStackEntry ->
                     val id = navBackStackEntry.arguments?.getString("characterId")?.toIntOrNull()
