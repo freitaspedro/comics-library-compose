@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.comicslibrary.ui.theme.ComicsLibraryTheme
 import com.example.comicslibrary.view.*
+import com.example.comicslibrary.viewmodel.CollectionViewModel
 import com.example.comicslibrary.viewmodel.LibraryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,6 +32,7 @@ sealed class Destination(val route: String) {
 class MainActivity : ComponentActivity() {
 
     private val libraryViewModel by viewModels<LibraryViewModel>()
+    private val collectionViewModel by viewModels<CollectionViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +44,11 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    CharactersScaffold(navController = navController, viewModel = libraryViewModel)
+                    CharactersScaffold(
+                        navController = navController,
+                        libraryViewModel = libraryViewModel,
+                        collectionViewModel = collectionViewModel
+                    )
                 }
             }
         }
@@ -50,7 +56,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CharactersScaffold(navController: NavHostController, viewModel: LibraryViewModel) {
+fun CharactersScaffold(
+    navController: NavHostController,
+    libraryViewModel: LibraryViewModel,
+    collectionViewModel: CollectionViewModel
+) {
     val scaffoldState = rememberScaffoldState()
     val context = LocalContext.current
 
@@ -64,7 +74,7 @@ fun CharactersScaffold(navController: NavHostController, viewModel: LibraryViewM
                 startDestination = Destination.Library.route
             ) {
                 composable(Destination.Library.route) {
-                    LibraryScreen(navController, viewModel, paddingValues)
+                    LibraryScreen(navController, libraryViewModel, paddingValues)
                 }
                 composable(Destination.Collection.route) {
                     CollectionScreen()
@@ -76,8 +86,10 @@ fun CharactersScaffold(navController: NavHostController, viewModel: LibraryViewM
                             .makeText(context, "Character id is required", Toast.LENGTH_SHORT)
                             .show()
                     } else {
-                        viewModel.retrieveCharacter(id)
-                        CharacterDetailsScreen(navController, viewModel, paddingValues)
+                        libraryViewModel.retrieveCharacter(id)
+                        CharacterDetailsScreen(
+                            navController, libraryViewModel, collectionViewModel, paddingValues
+                        )
                     }
                 }
             }
