@@ -27,4 +27,7 @@ interface CharacterDao {
     @Delete
     fun deleteCharacter(character: DbCharacter)
 
+    @Query("DELETE FROM $CHARACTER_TABLE")
+    fun deleteCharacters()
+
 }

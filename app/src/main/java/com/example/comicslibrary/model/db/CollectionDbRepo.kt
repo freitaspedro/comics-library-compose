@@ -14,4 +14,22 @@ interface CollectionDbRepo {
 
     suspend fun deleteCharacter(character: DbCharacter)
 
+    suspend fun deleteCharacters()
+
+    suspend fun getNotes(): Flow<List<DbNote>>
+
+    suspend fun getCharacterNotes(characterId: Int): Flow<List<DbNote>>
+
+    suspend fun getNote(noteId: Int): Flow<DbNote>
+
+    suspend fun addNote(note: DbNote)
+
+    suspend fun updateNote(note: DbNote)
+
+    suspend fun deleteNote(note: DbNote)
+
+    suspend fun deleteCharacterNotes(characterId: Int)
+
+    suspend fun deleteNotes()
+
 }

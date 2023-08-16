@@ -4,10 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.comicslibrary.model.api.ApiService
 import com.example.comicslibrary.model.api.MarvelApiRepo
-import com.example.comicslibrary.model.db.CharacterDao
-import com.example.comicslibrary.model.db.CollectionDb
-import com.example.comicslibrary.model.db.CollectionDbRepo
-import com.example.comicslibrary.model.db.CollectionDbRepoImpl
+import com.example.comicslibrary.model.db.*
 import com.example.comicslibrary.model.db.Constants.DB
 import dagger.Module
 import dagger.Provides
@@ -29,7 +26,10 @@ class HiltModule {
     fun provideCharacterDao(collectionDb: CollectionDb) = collectionDb.characterDao()
 
     @Provides
-    fun provideDbRepoImpl(characterDao: CharacterDao): CollectionDbRepo =
-        CollectionDbRepoImpl(characterDao)
+    fun provideNoteDao(collectionDb: CollectionDb) = collectionDb.noteDao()
+
+    @Provides
+    fun provideDbRepoImpl(characterDao: CharacterDao, noteDao: NoteDao): CollectionDbRepo =
+        CollectionDbRepoImpl(characterDao, noteDao)
 
 }
