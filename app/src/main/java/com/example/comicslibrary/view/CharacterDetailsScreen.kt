@@ -54,9 +54,9 @@ fun CharacterDetailsScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(
-                start = 4.dp,
+                start = 6.dp,
                 top = 12.dp,
-                end = 4.dp,
+                end = 6.dp,
                 bottom = paddingValues.calculateBottomPadding()
             )
             .verticalScroll(rememberScrollState()),
