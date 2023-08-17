@@ -29,6 +29,7 @@ import coil.compose.AsyncImage
 import com.example.comicslibrary.Destination
 import com.example.comicslibrary.model.CharactersApiResponse
 import com.example.comicslibrary.model.api.NetworkResult
+import com.example.comicslibrary.model.conn.ConnObservable
 import com.example.comicslibrary.viewmodel.LibraryViewModel
 
 @Composable
@@ -40,6 +41,10 @@ fun LibraryScreen(
 
     val result by viewModel.result.collectAsState()
     val searchText = viewModel.queryText.collectAsState()
+    val networkAvailable =
+        viewModel.networkAvailable.observe().collectAsState(
+            initial = ConnObservable.Status.Available
+        )
 
     Column(
         modifier = Modifier
@@ -50,6 +55,21 @@ fun LibraryScreen(
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
+        if (networkAvailable.value == ConnObservable.Status.Unavailable) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Red),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Network unavailable",
+                    color = Color.White,
+                    modifier = Modifier.padding(6.dp)
+                )
+            }
+        }
 
         OutlinedTextField(
             modifier = Modifier.padding(8.dp),

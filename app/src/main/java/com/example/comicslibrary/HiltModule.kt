@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.comicslibrary.model.api.ApiService
 import com.example.comicslibrary.model.api.MarvelApiRepo
+import com.example.comicslibrary.model.conn.ConnMonitor
 import com.example.comicslibrary.model.db.*
 import com.example.comicslibrary.model.db.Constants.DB
 import dagger.Module
@@ -31,5 +32,9 @@ class HiltModule {
     @Provides
     fun provideDbRepoImpl(characterDao: CharacterDao, noteDao: NoteDao): CollectionDbRepo =
         CollectionDbRepoImpl(characterDao, noteDao)
+
+    @Provides
+    fun provideConnMonitor(@ApplicationContext context: Context) =
+        ConnMonitor.getInstance(context)
 
 }
