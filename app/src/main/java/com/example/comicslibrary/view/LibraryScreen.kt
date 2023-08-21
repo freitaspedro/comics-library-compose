@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,14 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
 import com.example.comicslibrary.Destination
 import com.example.comicslibrary.model.CharactersApiResponse
 import com.example.comicslibrary.model.api.NetworkResult
@@ -56,28 +49,14 @@ fun LibraryScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        if (networkAvailable.value == ConnObservable.Status.Unavailable) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.Red),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = "Network unavailable",
-                    color = Color.White,
-                    modifier = Modifier.padding(6.dp)
-                )
-            }
-        }
+        if (networkAvailable.value == ConnObservable.Status.Unavailable) NetworkUnavailable()
 
-        OutlinedTextField(
+        SearchTextField(
             modifier = Modifier.padding(8.dp),
             value = searchText.value,
             onValueChange = viewModel::onQueryUpdate,
             label = { Text(text = "Character search") },
-            placeholder = { Text(text = "Character") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+            placeholder = { Text(text = "Character") }
         )
 
         Column(
@@ -87,7 +66,7 @@ fun LibraryScreen(
         ) {
             when (result) {
                 is NetworkResult.Initial -> {
-                    Text(text = "Search for a character")
+                    Text(text = "Search for a character", style = TextStyle.Medium)
                 }
                 is NetworkResult.Loading -> {
                     CircularProgressIndicator()
@@ -96,13 +75,30 @@ fun LibraryScreen(
                     DisplayCharacters(result, navController)
                 }
                 is NetworkResult.Error -> {
-                    Text(text = "Error: ${result.message}")
+                    Text(text = "Error: ${result.message}", style = TextStyle.Medium)
                 }
             }
 
         }
 
 
+    }
+}
+
+@Composable
+fun NetworkUnavailable() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Red),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Network unavailable",
+            color = Color.White,
+            style = TextStyle.Small,
+            modifier = Modifier.padding(6.dp)
+        )
     }
 }
 
@@ -119,28 +115,35 @@ fun DisplayCharacters(
 
             result.data.attributionText?.let {
                 item {
-                    AttributionText(text = it)
+                    Text(
+                        text = it,
+                        style = TextStyle.Small,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
                 }
             }
 
             items(characters) { character ->
                 val imageUrl = character.thumbnail?.path + "." + character.thumbnail?.extension
-                val title = character.name
-                val description = character.description
+                val title = character.name ?: "No name"
+                val description = character.description ?: "No description"
                 val context = LocalContext.current
-                val id = character.id
 
                 Column(
                     modifier = Modifier
                         .padding(4.dp)
-                        .clip(RoundedCornerShape(5.dp))
+                        .clip(RoundedCornerShape(6.dp))
                         .background(Color.White)
                         .padding(4.dp)
                         .fillMaxWidth()
                         .wrapContentHeight()
                         .clickable {
                             if (character.id != null)
-                                navController.navigate(Destination.CharacterDetails.createRoute(id))
+                                navController.navigate(
+                                    Destination.CharacterDetails.createRoute(
+                                        character.id
+                                    )
+                                )
                             else
                                 Toast
                                     .makeText(context, "Character id is null", Toast.LENGTH_SHORT)
@@ -156,14 +159,13 @@ fun DisplayCharacters(
                         )
                         Column(modifier = Modifier.padding(4.dp)) {
                             Text(
-                                text = title ?: "",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp
+                                text = title,
+                                style = TextStyle.BoldMedium
                             )
                             Text(
-                                text = description ?: "",
-                                maxLines = 4,
-                                fontSize = 14.sp
+                                text = description,
+                                style = TextStyle.Small,
+                                maxLines = 4
                             )
                         }
                     }
@@ -174,29 +176,4 @@ fun DisplayCharacters(
             }
         }
     }
-}
-
-//TODO: move this to a new file
-@Composable
-fun AttributionText(text: String) {
-    Text(
-        text = text,
-        modifier = Modifier.padding(start = 8.dp, top = 4.dp),
-        fontSize = 12.sp
-    )
-}
-
-//TODO: move this to a new file
-@Composable
-fun CharacterImage(
-    url: String?,
-    modifier: Modifier,
-    contentScale: ContentScale = ContentScale.FillWidth
-) {
-    AsyncImage(
-        model = url,
-        contentDescription = null,
-        modifier = modifier,
-        contentScale = contentScale
-    )
 }

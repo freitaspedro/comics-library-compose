@@ -7,14 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.KeyboardArrowDown
-import androidx.compose.material.icons.outlined.KeyboardArrowUp
+import androidx.compose.material.Button
+import androidx.compose.material.Divider
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,11 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.comicslibrary.model.Note
 import com.example.comicslibrary.model.db.DbNote
@@ -41,9 +32,7 @@ fun CollectionScreen(
 
     val notes = viewModel.notes.collectAsState()
     val collection = viewModel.collection.collectAsState()
-    val expanded = remember {
-        mutableStateOf(-1)
-    }
+    val expanded = remember { mutableStateOf(-1) }
 
     LazyColumn(
         modifier = Modifier
@@ -54,6 +43,10 @@ fun CollectionScreen(
             )
     ) {
         items(collection.value) { character ->
+            val imageUrl = character.thumbnail
+            val title = character.name ?: "No name"
+            val comics = character.comics ?: "No comics"
+
             Column {
                 Row(modifier = Modifier
                     .fillMaxWidth()
@@ -66,10 +59,6 @@ fun CollectionScreen(
                             expanded.value = character.id
                         }
                     }) {
-
-                    val imageUrl = character.thumbnail
-                    val title = character.name ?: "No name"
-                    val comics = character.comics ?: "No comics"
 
                     CharacterImage(
                         url = imageUrl,
@@ -86,12 +75,12 @@ fun CollectionScreen(
                             .fillMaxHeight()
                     ) {
                         Text(
-                            text = title, fontWeight = FontWeight.Bold, fontSize = 22.sp
+                            text = title,
+                            style = TextStyle.BoldMedium
                         )
                         Text(
                             text = comics,
-                            fontStyle = FontStyle.Italic,
-                            fontSize = 8.sp,
+                            style = TextStyle.ItalicSmallMinus,
                             maxLines = 4,
                         )
                     }
@@ -103,15 +92,15 @@ fun CollectionScreen(
                             .padding(4.dp),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Icon(imageVector = Icons.Outlined.Delete,
-                            contentDescription = null,
+                        IconDelete(
                             modifier = Modifier.clickable {
                                 viewModel.deleteCharacter(character)
-                            })
-                        Icon(
-                            imageVector = getSuitableIcon(character.id == expanded.value),
-                            contentDescription = null
+                            }
                         )
+                        if (character.id == expanded.value)
+                            IconArrowUp(modifier = Modifier)
+                        else
+                            IconArrowDown(modifier = Modifier)
                     }
 
                 }
@@ -147,15 +136,9 @@ fun NoteForm(characterId: Int, viewModel: CollectionViewModel) {
 
     val context = LocalContext.current
 
-    val adding = remember {
-        mutableStateOf(-1)
-    }
-    val noteTitle = remember {
-        mutableStateOf("")
-    }
-    val noteText = remember {
-        mutableStateOf("")
-    }
+    val adding = remember { mutableStateOf(-1) }
+    val noteTitle = remember { mutableStateOf("") }
+    val noteText = remember { mutableStateOf("") }
 
     if (adding.value == characterId) {
         Column(
@@ -164,26 +147,27 @@ fun NoteForm(characterId: Int, viewModel: CollectionViewModel) {
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            OutlinedTextField(
-                value = noteTitle.value,
-                onValueChange = { noteTitle.value = it },
+            TextFieldCommon(
+                modifier = Modifier,
+                text = noteTitle,
                 label = { Text(text = "Note title") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                placeholder = null
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Bottom
             ) {
-                OutlinedTextField(
-                    value = noteText.value,
-                    onValueChange = { noteText.value = it },
+
+                TextFieldCommon(
+                    modifier = Modifier,
+                    text = noteText,
                     label = { Text(text = "Note text") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                    placeholder = null
                 )
-                Button(
-                    modifier = Modifier.fillMaxHeight(),
-                    onClick = {
+
+                IconCheck(
+                    modifier = Modifier.clickable {
                         if (noteTitle.value == "") {
                             Toast
                                 .makeText(context, "Note title is required", Toast.LENGTH_SHORT)
@@ -196,12 +180,8 @@ fun NoteForm(characterId: Int, viewModel: CollectionViewModel) {
                             adding.value = -1
                         }
                     }
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = null
-                    )
-                }
+                )
+
             }
         }
     }
@@ -215,10 +195,7 @@ fun NoteForm(characterId: Int, viewModel: CollectionViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = null
-            )
+            IconAdd(modifier = Modifier)
             Text(text = "New note")
         }
     }
@@ -239,15 +216,14 @@ fun NotesList(notes: List<DbNote>, viewModel: CollectionViewModel) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = note.title,
-                    fontWeight = FontWeight.Bold
+                    style = TextStyle.BoldSmall
                 )
                 Text(
-                    text = note.text
+                    text = note.text,
+                    style = TextStyle.Small
                 )
             }
-            Icon(
-                imageVector = Icons.Outlined.Delete,
-                contentDescription = null,
+            IconDelete(
                 modifier = Modifier.clickable {
                     viewModel.deleteNote(note)
                 }
@@ -255,6 +231,3 @@ fun NotesList(notes: List<DbNote>, viewModel: CollectionViewModel) {
         }
     }
 }
-
-fun getSuitableIcon(isExpanded: Boolean) =
-    if (isExpanded) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown
