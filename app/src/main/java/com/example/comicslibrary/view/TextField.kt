@@ -13,8 +13,8 @@ fun SearchTextField(
     modifier: Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    label: @Composable (() -> Unit)?,
-    placeholder: @Composable (() -> Unit)?
+    label: @Composable () -> Unit,
+    placeholder: @Composable () -> Unit
 ) {
     OutlinedTextField(
         modifier = modifier,

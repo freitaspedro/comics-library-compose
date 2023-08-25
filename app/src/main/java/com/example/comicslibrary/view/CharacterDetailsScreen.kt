@@ -84,24 +84,14 @@ fun CharacterDetailsScreen(
             modifier = Modifier.padding(22.dp)
         )
 
-        Button(
+        IconButton(
             enabled = !isInCollection,
             onClick = { if (!isInCollection) collectionViewModel.suitableSave(character) },
-            modifier = Modifier.padding(vertical = 20.dp)
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                if (!isInCollection) {
-                    IconAdd(modifier = Modifier)
-                    Text(text = "Add to collection")
-                } else {
-                    IconCheck(modifier = Modifier)
-                    Text(text = "Added")
-                }
-            }
-        }
+            iconEnabled = { IconAdd(modifier = Modifier) },
+            textEnabled = { Text(text = "New note") },
+            iconDisabled = { IconCheck(modifier = Modifier) },
+            textDisabled = { Text(text = "Added") }
+        )
 
     }
 

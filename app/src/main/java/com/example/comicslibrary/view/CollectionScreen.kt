@@ -186,19 +186,12 @@ fun NoteForm(characterId: Int, viewModel: CollectionViewModel) {
         }
     }
 
-    Button(
+    IconButton(
         enabled = adding.value == -1,
         onClick = { adding.value = characterId },
-        modifier = Modifier.padding(vertical = 20.dp)
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            IconAdd(modifier = Modifier)
-            Text(text = "New note")
-        }
-    }
+        iconEnabled = { IconAdd(modifier = Modifier) },
+        textEnabled = { Text(text = "New note") }
+    )
 
 }
 
