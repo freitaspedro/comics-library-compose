@@ -14,10 +14,10 @@ import androidx.compose.ui.unit.dp
 fun IconButton(
     enabled: Boolean,
     onClick: () -> Unit,
-    iconEnabled: @Composable () -> Unit,
-    textEnabled: @Composable () -> Unit,
-    iconDisabled: @Composable (() -> Unit)? = null,
-    textDisabled: @Composable (() -> Unit)? = null,
+    primaryIcon: @Composable () -> Unit,
+    primaryText: @Composable () -> Unit,
+    secondIcon: @Composable (() -> Unit)? = null,
+    secondText: @Composable (() -> Unit)? = null,
 ) {
     Button(
         enabled = enabled,
@@ -29,15 +29,15 @@ fun IconButton(
             modifier = Modifier.fillMaxWidth()
         ) {
             if (enabled) {
-                iconEnabled()
-                textEnabled()
+                primaryIcon()
+                primaryText()
             } else {
-                if (iconDisabled != null && textDisabled != null) {
-                    iconDisabled()
-                    textDisabled()
+                if (secondIcon != null && secondText != null) {
+                    secondIcon()
+                    secondText()
                 } else {
-                    iconEnabled()
-                    textEnabled()
+                    primaryIcon()
+                    primaryText()
                 }
             }
         }

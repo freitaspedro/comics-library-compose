@@ -14,7 +14,7 @@ fun SearchTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: @Composable () -> Unit,
-    placeholder: @Composable () -> Unit
+    placeholder: @Composable (() -> Unit)?
 ) {
     OutlinedTextField(
         modifier = modifier,
@@ -31,7 +31,7 @@ fun TextFieldCommon(
     modifier: Modifier,
     text: MutableState<String>,
     label: @Composable () -> Unit,
-    placeholder: @Composable () -> Unit
+    placeholder: @Composable (() -> Unit)?
 ) {
     OutlinedTextField(
         modifier = modifier,

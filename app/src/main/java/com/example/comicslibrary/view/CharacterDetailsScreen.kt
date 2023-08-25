@@ -87,10 +87,10 @@ fun CharacterDetailsScreen(
         IconButton(
             enabled = !isInCollection,
             onClick = { if (!isInCollection) collectionViewModel.suitableSave(character) },
-            iconEnabled = { IconAdd(modifier = Modifier) },
-            textEnabled = { Text(text = "New note") },
-            iconDisabled = { IconCheck(modifier = Modifier) },
-            textDisabled = { Text(text = "Added") }
+            primaryIcon = { IconAdd(modifier = Modifier) },
+            primaryText = { Text(text = "New note") },
+            secondIcon = { IconCheck(modifier = Modifier) },
+            secondText = { Text(text = "Added") }
         )
 
     }

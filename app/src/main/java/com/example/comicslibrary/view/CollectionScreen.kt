@@ -189,8 +189,8 @@ fun NoteForm(characterId: Int, viewModel: CollectionViewModel) {
     IconButton(
         enabled = adding.value == -1,
         onClick = { adding.value = characterId },
-        iconEnabled = { IconAdd(modifier = Modifier) },
-        textEnabled = { Text(text = "New note") }
+        primaryIcon = { IconAdd(modifier = Modifier) },
+        primaryText = { Text(text = "New note") }
     )
 
 }
